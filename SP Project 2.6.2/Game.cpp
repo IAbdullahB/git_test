@@ -1,5 +1,9 @@
 #include "Game.h"
 
+void Game::initboody()
+{
+}
+
 void Game::initVariables()
 {
 

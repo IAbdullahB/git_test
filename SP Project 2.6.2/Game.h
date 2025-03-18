@@ -32,15 +32,14 @@ private:
 	RectangleShape enemy;
 
 
-
+	
 	// initials
+	void initboody();
 	void initVariables();
 	void initWindow();
 	void initEnemy();
 
 	
-
-
 public:
 	Game();
 	virtual ~Game();
