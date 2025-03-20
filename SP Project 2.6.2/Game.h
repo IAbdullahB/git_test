@@ -19,6 +19,7 @@ private:
 
 	// mouse pos
 	Vector2i mousePosWindow;
+	Vector2f mousePosView;
 
 	// logic
 	int points;
@@ -34,7 +35,7 @@ private:
 
 	
 	// initials
-	void initboody();
+	
 	void initVariables();
 	void initWindow();
 	void initEnemy();
