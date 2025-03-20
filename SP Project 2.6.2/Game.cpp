@@ -1,8 +1,6 @@
 #include "Game.h"
 
-void Game::initboody()
-{
-}
+
 
 void Game::initVariables()
 {
@@ -10,7 +8,7 @@ void Game::initVariables()
 	this->window = nullptr;
 
     this->points = 0;
-    this->enemySpawnTimerMax = 300.f;
+    this->enemySpawnTimerMax = 100.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
 
@@ -82,7 +80,7 @@ void Game::spwanEnemy()
         static_cast<float> (rand() % static_cast<int>(this->window->getSize().x - this->enemy.getSize().x)), 
         0.f
     );
-    this->enemy.setSize(Vector2f(100.f, 100.f));
+    this->enemy.setSize(Vector2f(50.f, 50.f));
 
     this->enemy.setFillColor(Color().Green);
     this->enemies.push_back(this->enemy);
@@ -109,10 +107,12 @@ void Game::pollEvents() {
 void Game::updateMousePos()
 {
     this->mousePosWindow = Mouse::getPosition(*this->window);
+    this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
 }
 
 void Game::updateEnemies()
 {
+    
     if (this->enemies.size() < this->maxEnemies) {
 
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
@@ -125,7 +125,23 @@ void Game::updateEnemies()
 
     }
 
-    for (auto& e : this->enemies) e.move(0.f, 1.f);
+     
+    // move enemies
+    for (int i = 0; i < this->enemies.size();i++) {
+        bool deleted = false;
+
+        this->enemies[i].move(0.f, 1.f);
+
+        if (Mouse::isButtonPressed(Mouse::Left)) {
+            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
+                deleted = true;
+            }
+        }
+
+        if (this->enemies[i].getPosition().y > this->window->getSize().y) deleted = true;
+
+        if(deleted) this->enemies.erase(this->enemies.begin() + i);
+    }
 }
 
 void Game::update()
