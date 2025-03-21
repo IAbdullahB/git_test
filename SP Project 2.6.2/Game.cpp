@@ -135,6 +135,7 @@ void Game::updateEnemies()
         if (Mouse::isButtonPressed(Mouse::Left)) {
             if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
                 deleted = true;
+                this->points += 10.f;
             }
         }
 
