@@ -7,10 +7,13 @@ void Game::initVariables()
 
 	this->window = nullptr;
 
+    this->endGame = false;
     this->points = 0;
+    this->health = 10;
     this->enemySpawnTimerMax = 100.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
+    this->mouseHeld = false;
 
 }
 
@@ -55,6 +58,11 @@ Game::~Game() {
 const bool Game::running() const
 {
 	return this->window->isOpen();
+}
+
+const bool Game::getEndGame() const
+{
+    return this->endGame;   
 }
 
 
@@ -126,22 +134,44 @@ void Game::updateEnemies()
     }
 
      
-    // move enemies
+    // moveing & updating enemies
     for (int i = 0; i < this->enemies.size();i++) {
         bool deleted = false;
 
         this->enemies[i].move(0.f, 1.f);
 
-        if (Mouse::isButtonPressed(Mouse::Left)) {
-            if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
-                deleted = true;
-                this->points += 10.f;
-            }
+        
+
+        if (this->enemies[i].getPosition().y > this->window->getSize().y) {
+            this->enemies.erase(this->enemies.begin() + i);
+            this->health--;
+            cout << "Health : " << this->health << '\n';
         }
+            
+    }
 
-        if (this->enemies[i].getPosition().y > this->window->getSize().y) deleted = true;
+    // check if click upon
+    if (Mouse::isButtonPressed(Mouse::Left)) {
+        if (!this->mouseHeld) {
+            
+            this->mouseHeld = true;
+            bool deleted = false;
+            for (int i = 0; i < this->enemies.size() && !deleted;i++) {
 
-        if(deleted) this->enemies.erase(this->enemies.begin() + i);
+                if (this->enemies[i].getGlobalBounds().contains(this->mousePosView)) {
+
+                    deleted = true;
+                    this->enemies.erase(this->enemies.begin() + i);
+
+                    //gain points
+                    this->points++;
+                }
+            }
+
+        }
+    }
+    else {
+        this->mouseHeld = false;
     }
 }
 
@@ -149,9 +179,12 @@ void Game::update()
 {
 	this->pollEvents();
 
-    this->updateMousePos();
+    if (!endGame) {
+        this->updateMousePos();
 
-    this->updateEnemies();
+        this->updateEnemies();
+    }
+    if (this->health <= 0) this->endGame = true;
 }
 
 void Game::renderEnemies()

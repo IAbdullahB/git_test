@@ -22,10 +22,13 @@ private:
 	Vector2f mousePosView;
 
 	// logic
-	int points;
+	bool endGame;
+	unsigned points;
+	int health;
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
 	float maxEnemies;
+	bool mouseHeld;
 
 
 	// objects
@@ -48,6 +51,7 @@ public:
 	// accessors
 
 	const bool running() const;
+	const bool getEndGame() const;
 
 
 
